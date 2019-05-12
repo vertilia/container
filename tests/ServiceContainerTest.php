@@ -10,7 +10,7 @@ class ServiceMock
     public $env;
     public $arg;
 
-    public function __construct(EnvMock $env, $arg = null)
+    public function __construct(EnvMockInterface $env, $arg = null)
     {
         $this->env = $env;
         $this->arg = $arg;
