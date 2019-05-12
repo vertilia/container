@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace Vertilia\Container;
 
+use Closure;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 
 class ServiceMock
 {
@@ -47,6 +49,7 @@ class ServiceContainerTest extends TestCase
     public function testServiceContainerUndefinedClass()
     {
         $app = new ServiceContainer(__DIR__ . '/services.php');
+        $this->assertInstanceOf(ContainerInterface::class, $app);
         $this->assertInstanceOf(EnvMockInterface::class, $app->get(EnvMockInterface::class));
     }
 
@@ -83,7 +86,7 @@ class ServiceContainerTest extends TestCase
         $container = include __DIR__ . '/services.php';
         // after inclusion $container closures must be rebound to $app
         foreach ($container as $k => &$i) {
-            if ($i instanceof \Closure) {
+            if ($i instanceof Closure) {
                 $i = $i->bindTo($app);
             }
         }
