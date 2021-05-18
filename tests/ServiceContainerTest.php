@@ -85,7 +85,7 @@ class ServiceContainerTest extends TestCase
         $app = new ServiceContainer();
         $container = include __DIR__ . '/services.php';
         // after inclusion $container closures must be rebound to $app
-        foreach ($container as $k => &$i) {
+        foreach ($container as &$i) {
             if ($i instanceof Closure) {
                 $i = $i->bindTo($app);
             }
