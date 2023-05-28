@@ -8,4 +8,7 @@ Thumbs.db
 
 # composer
 composer.lock
-/vendor/
+vendor/
+
+# PhpUnit
+.phpunit.result.cache
