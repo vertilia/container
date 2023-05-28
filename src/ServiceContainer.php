@@ -1,31 +1,29 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Vertilia\Container;
 
+use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 
 class ServiceContainer implements ContainerInterface
 {
-    /** @var array */
     private array $container = [];
-    /** @var array */
     private array $store = [];
 
     /**
      * Create new container optionally calling loadFrom().
      * When an array of files is provided, latter entries overwrite existing ones.
      *
-     * @param array|string $filepath path to configuration file (or a list of configuration files to load)
+     * @param ?array $filepath path to configuration file (or a list of configuration files to load)
      */
-    public function __construct($filepath = null)
+    public function __construct(?array $filepath = null)
     {
         if (is_array($filepath)) {
             foreach ($filepath as $file) {
                 $this->loadFrom($file);
             }
-        } elseif (isset($filepath)) {
-            $this->loadFrom($filepath);
         }
     }
 
@@ -39,15 +37,15 @@ class ServiceContainer implements ContainerInterface
         if (is_array($container)) {
             $this->setContainer($container);
         } else {
-            throw new \InvalidArgumentException(sprintf(
-                'Config file %s must return an array with service container definition',
-                $filename
-            ));
+            throw new InvalidArgumentException(
+                sprintf('Config file %s must return an array with service container definition', $filename)
+            );
         }
     }
 
     /**
-     * @param array $container
+     * Add rules from array to the container
+     * @param array $container hash map of rules
      */
     public function setContainer(array $container)
     {
@@ -55,18 +53,18 @@ class ServiceContainer implements ContainerInterface
     }
 
     /**
-    * (Creates, stores and) returns the object instance.
-    * Does not store created object if additional params
-    * were specified in $args
-    * @param string $id     class name of returned object
-    * @param array $args    additional params to constructor
-    * @return mixed
-    */
-    public function get($id, ...$args)
+     * (Create, store and) return the object instance.
+     * Does not store created object if additional params
+     * were specified in $args
+     * @param string $id class name of returned object
+     * @param array $args additional params to constructor
+     * @return mixed
+     */
+    public function get(string $id, ...$args)
     {
         if (empty($this->store[$id]) or $args) {
             // instantiate depending on specs from container
-            if (! isset($this->container[$id])) {
+            if (!isset($this->container[$id])) {
                 // if undefined then instantiate with new
                 $obj = new $id(...$args);
             } elseif (is_callable($this->container[$id])) {
@@ -100,11 +98,11 @@ class ServiceContainer implements ContainerInterface
     }
 
     /**
-    * Whether the class is configured
-    * @param string $id object class name
-    * @return bool
-    */
-    public function has($id): bool
+     * Whether the class is configured
+     * @param string $id object class name
+     * @return bool
+     */
+    public function has(string $id): bool
     {
         return isset($this->container[$id]);
     }

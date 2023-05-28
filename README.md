@@ -49,7 +49,7 @@ classes will be created:
    instance. In our example when we'll ask for the EnvMockInterface we will
    receive an instance of EnvMock
 
-1. instantiating via array of service names. If object creation needs a list of
+2. instantiating via array of service names. If object creation needs a list of
    other objects for its constructor, we provide their names in an array. This
    way container will first instantiate these dependencies and then will call
    the class constructor passing dependencies as parameters. In our case the
@@ -58,12 +58,12 @@ classes will be created:
    `return new ServiceMock(new EnvMock);` (here `EnvMockInterface::class`
    dependency will be resolved by a previous rule).
 
-1. instantiating via callback with additional params allowed. Same callback than
+3. instantiating via callback with additional params allowed. Same callback than
    in the first rule, but with additional arguments. Use this form when specific
    objects need additional arguments to pass into constructor. You can specify
    a fixed number of arguments or use php-5.6 specific `...` operator.
 
-1. it is also possible to just return existing objects and even scalars, as
+4. it is also possible to just return existing objects and even scalars, as
    shown in 3 last examples.
 
 You can have as many rule files as needed, so each module in your application
@@ -76,7 +76,7 @@ may come with its own descriptions.
 
 // bootstrap.php
 
-$app = new \Vertilia\Container\ServiceContainer(__DIR__ . '/services.php');
+$app = new \Vertilia\Container\ServiceContainer([__DIR__ . '/services.php']);
 ```
 
 You may now ask the `$app` service container to return you the object of needed
@@ -95,4 +95,4 @@ Please see more usage cases in `tests/`.
 
 Service Containers together with Dependency Injection techniques do a great job
 to remove singletons from our applications, help decouple our code, make it more
-testable and solid.
+testable and SOLID.

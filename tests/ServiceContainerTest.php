@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Vertilia\Container;
@@ -7,9 +8,16 @@ use Closure;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
+interface EnvMockInterface
+{
+    public function getName(): string;
+
+    public function getRootDir(): string;
+}
+
 class ServiceMock
 {
-    public $env;
+    public EnvMockInterface $env;
     public $arg;
 
     public function __construct(EnvMockInterface $env, $arg = null)
@@ -19,26 +27,21 @@ class ServiceMock
     }
 }
 
-interface EnvMockInterface
-{
-    public function getName(): string;
-    public function getRootDir(): string;
-}
-
 class EnvMock implements EnvMockInterface
 {
     public function getName(): string
     {
         return self::class;
     }
+
     public function getRootDir(): string
     {
-        return \dirname(__DIR__);
+        return dirname(__DIR__);
     }
 }
 
 /**
- * @coversDefaultClass \Vertilia\Container\ServiceContainer
+ * @coversDefaultClass ServiceContainer
  */
 class ServiceContainerTest extends TestCase
 {
@@ -48,7 +51,7 @@ class ServiceContainerTest extends TestCase
      */
     public function testServiceContainerUndefinedClass()
     {
-        $app = new ServiceContainer(__DIR__ . '/services.php');
+        $app = new ServiceContainer([__DIR__ . '/services.php']);
         $this->assertInstanceOf(ContainerInterface::class, $app);
         $this->assertInstanceOf(EnvMockInterface::class, $app->get(EnvMockInterface::class));
     }
@@ -71,7 +74,7 @@ class ServiceContainerTest extends TestCase
     public function testServiceContainerLoadFrom()
     {
         $app = new ServiceContainer();
-        $app->loadFrom($app->get(EnvMock::class)->getRootDir().'/tests/services.php');
+        $app->loadFrom($app->get(EnvMock::class)->getRootDir() . '/tests/services.php');
         $this->assertInstanceOf(ServiceMock::class, $app->get(ServiceMock::class));
     }
 
